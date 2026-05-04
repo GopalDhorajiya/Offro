@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const socket = io(`${process.env.BACKEND_URL}`, {
+const socket = io(`${process.env.VITE_BACKEND_URL}`, {
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
