@@ -1,4 +1,4 @@
-const API_URL = `${process.env.VITE_BACKEND_URL}/api`;
+const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 let serverTimeOffset = 0;
 
