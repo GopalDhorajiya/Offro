@@ -100,6 +100,11 @@ export const OfferCard = ({ offer, onClick }) => {
             Buy {offer.buyQty} Get {offer.getQty}
           </p>
         )}
+        {offer.benefitType === 'instant_off' && (
+          <p className="text-orange-600 font-bold text-xl">
+            ₹{offer.discountAmount} OFF on ₹{offer.minPurchase}
+          </p>
+        )}
         {(offer.constraintType === 'slot_limit' || offer.constraintType === 'group_goal') && (
           <p className="text-gray-700">
             {offer.constraintType === 'group_goal' ? 'Participants' : 'Slots'}: {offer.constraintType === 'group_goal' ? (offer.participants?.length || 0) : offer.filledSlots} / {offer.totalSlots}

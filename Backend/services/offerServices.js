@@ -13,6 +13,8 @@ export const createOffer = async (offerData, shopId) => {
             discount,
             buyQty,
             getQty,
+            discountAmount,
+            minPurchase,
             totalSlots,
             // New fields from frontend
             productName,
@@ -21,6 +23,17 @@ export const createOffer = async (offerData, shopId) => {
             productWeight,
             productUnit
         } = offerData;
+
+        // Validation based on benefitType
+        if (benefitType === 'discount' && !discount) {
+            throw new Error("Discount percentage is required for discount offer");
+        }
+        if (benefitType === 'buy_x_get_y' && (!buyQty || !getQty)) {
+            throw new Error("Buy and Get quantities are required for Buy X Get Y offer");
+        }
+        if (benefitType === 'instant_off' && (!discountAmount || !minPurchase)) {
+            throw new Error("Discount amount and minimum purchase are required for Instant Off offer");
+        }
 
         let finalApplicableProducts = [...applicableProducts];
 
@@ -49,6 +62,8 @@ export const createOffer = async (offerData, shopId) => {
             discount,
             buyQty,
             getQty,
+            discountAmount,
+            minPurchase,
             totalSlots
         });
 

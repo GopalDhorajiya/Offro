@@ -38,6 +38,8 @@ const CreateOffer = () => {
     discountedPrice: '',
     buyQty: '',
     getQty: '',
+    discountAmount: '',
+    minPurchase: '',
     totalSlots: '',
     startTime: getNextHourStart(),
     endTime: '',
@@ -169,6 +171,7 @@ const CreateOffer = () => {
                 >
                   <option value="discount">Discount</option>
                   <option value="buy_x_get_y">Buy X Get Y</option>
+                  <option value="instant_off">Instant Off</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -299,6 +302,31 @@ const CreateOffer = () => {
                       value={formData.getQty}
                       onChange={handleChange}
                       placeholder="1"
+                      required
+                      min="1"
+                    />
+                  </div>
+                )}
+
+                {formData.benefitType === 'instant_off' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fadeIn">
+                    <Input
+                      label="Discount Amount (₹)"
+                      name="discountAmount"
+                      type="number"
+                      value={formData.discountAmount}
+                      onChange={handleChange}
+                      placeholder="50"
+                      required
+                      min="1"
+                    />
+                    <Input
+                      label="Min Purchase (₹)"
+                      name="minPurchase"
+                      type="number"
+                      value={formData.minPurchase}
+                      onChange={handleChange}
+                      placeholder="500"
                       required
                       min="1"
                     />

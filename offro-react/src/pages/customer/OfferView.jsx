@@ -127,6 +127,12 @@ const OfferView = () => {
             {offer.benefitType === 'buy_x_get_y' && (
               <span className="text-3xl font-black text-orange-600">Buy {offer.buyQty} Get {offer.getQty} Free</span>
             )}
+            {offer.benefitType === 'instant_off' && (
+              <div className="flex flex-col">
+                <span className="text-4xl font-black text-orange-600">₹{offer.discountAmount} OFF</span>
+                <span className="text-sm text-gray-500 font-bold">On minimum purchase of ₹{offer.minPurchase}</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-4 pt-6 border-t border-gray-100">

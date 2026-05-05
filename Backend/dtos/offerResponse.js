@@ -12,6 +12,8 @@ const offerResponse = {
             discount: offer.discount,
             buyQty: offer.buyQty,
             getQty: offer.getQty,
+            discountAmount: offer.discountAmount,
+            minPurchase: offer.minPurchase,
             totalSlots: offer.totalSlots,
             filledSlots: offer.filledSlots,
             participants: offer.participants || [],

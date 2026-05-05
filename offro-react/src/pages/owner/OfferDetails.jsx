@@ -17,6 +17,11 @@ const DEAL_LINES = {
     (d) => `👉 Pick up *${d.buyQty}* of ${d.products} → take *${d.getQty} home free*\nIn-store deal only. Come see us!`,
     (d) => `🛒 *Buy ${d.buyQty} Get ${d.getQty} FREE* on ${d.products}\nStroll in, stock up, save big.`,
   ],
+  instant_off: [
+    (d) => `💸 *₹${d.discountAmount} OFF* on purchase of ₹${d.minPurchase} or more!\nVisit our shop to grab this deal.`,
+    (d) => `🔥 Get *₹${d.discountAmount} INSTANT OFF* when you spend ₹${d.minPurchase}+\nOnly at our store today!`,
+    (d) => `✨ Shop for ₹${d.minPurchase} and get *₹${d.discountAmount} OFF* instantly!\nCome see us soon.`,
+  ],
   group_goal: [
     (d) => `👥 *Group deal — ${d.discount}% OFF*\nBring a friend to the shop, both of you save!\n${d.slotsLeft != null ? `⚠️ Only *${d.slotsLeft} group spots* left.` : ""}`,
   ],
@@ -123,12 +128,14 @@ const ShareBox = ({ offer }) => {
     const discount = offer.discount ?? 0;
     const buyQty = offer.buyQty ?? 0;
     const getQty = offer.getQty ?? 0;
+    const discountAmount = offer.discountAmount ?? 0;
+    const minPurchase = offer.minPurchase ?? 0;
     const totalSlots = offer.totalSlots ?? 0;
     const filledSlots = offer.filledSlots ?? 0;
     const participantsCount = offer.participants?.length || 0;
     const slotsLeft = totalSlots ? totalSlots - (cType === 'group_goal' ? participantsCount : filledSlots) : null;
 
-    const data = { shopName, products, discount, buyQty, getQty, totalSlots, filledSlots, slotsLeft };
+    const data = { shopName, products, discount, buyQty, getQty, discountAmount, minPurchase, totalSlots, filledSlots, slotsLeft };
     const variants = DEAL_LINES[bType] || DEAL_LINES[cType] || DEAL_LINES["discount"];
     const dealLine = pick(variants)(data);
     const urgency = pick(URGENCY_LINES);
@@ -353,7 +360,9 @@ const OfferDetails = () => {
                     <div>
                       <p className="text-orange-600/60 text-xs font-black uppercase mb-1">Current Deal</p>
                       <p className="text-3xl font-black text-orange-900">
-                        {offer.benefitType === 'discount' ? `${offer.discount}% OFF` : `Buy ${offer.buyQty} Get ${offer.getQty}`}
+                        {offer.benefitType === 'discount' && `${offer.discount}% OFF`}
+                        {offer.benefitType === 'buy_x_get_y' && `Buy ${offer.buyQty} Get ${offer.getQty}`}
+                        {offer.benefitType === 'instant_off' && `₹${offer.discountAmount} OFF on ₹${offer.minPurchase}`}
                       </p>
                     </div>
                     <div className="text-5xl opacity-20">💰</div>

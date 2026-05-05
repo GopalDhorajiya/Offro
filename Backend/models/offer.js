@@ -8,7 +8,7 @@ const offerSchema = new mongoose.Schema({
     },
     benefitType: {
         type: String,
-        enum: ["discount", "buy_x_get_y"],
+        enum: ["discount", "buy_x_get_y", "instant_off"],
         required: true,
     },
     constraintType: {
@@ -34,6 +34,8 @@ const offerSchema = new mongoose.Schema({
     },
     buyQty: Number,
     getQty: Number,
+    discountAmount: Number,
+    minPurchase: Number,
 
     // Constraint Fields
     startTime: { type: Date },
