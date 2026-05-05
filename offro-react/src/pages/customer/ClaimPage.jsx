@@ -36,13 +36,14 @@ const ClaimPage = () => {
     try {
       const data = await createClaim(id, customerToken);
       const claim = data.claim;
+      const updatedOffer = data.offer || offer;
       const code = claim.claimCode || 'PENDING';
       
       // Navigate to MyClaim page
       navigate(`/my-claim/${code}`, { 
         state: { 
           claim: claim, 
-          offer: offer,
+          offer: updatedOffer,
           message: data.message 
         } 
       });

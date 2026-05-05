@@ -14,12 +14,37 @@ const MyClaim = () => {
   const [offer, setOffer] = useState(location.state?.offer || null);
   const message = location.state?.message;
 
-  const isPending = (!claim?.claimCode || claim?.claimCode === 'PENDING') && urlCode === 'PENDING';
+  const isPending = !claim?.claimCode || claim?.claimCode === 'PENDING';
 
   useEffect(() => {
-    if (offer?.id) {
+    const refetchData = async () => {
+      if (!claim && urlCode !== 'PENDING') {
+        // We have a code but no claim object, could be from a direct link or refresh
+        // This is a bit tricky since we don't have the ID, only the claimCode in URL
+        // For now, if we have state we are good. If not, we might need a getClaimByCode API.
+      }
+      
+      // If we are missing offer but have claim, fetch offer
+      if (!offer && claim?.offerId) {
+        try {
+          const offerId = typeof claim.offerId === 'string' ? claim.offerId : claim.offerId._id;
+          const { getOfferById } = await import('../../services/offerService');
+          const data = await getOfferById(offerId);
+          setOffer(data);
+        } catch (err) {
+          console.error("Failed to fetch offer:", err);
+        }
+      }
+    };
+
+    refetchData();
+  }, [claim, offer]);
+
+  useEffect(() => {
+    if (offer?.id || offer?._id) {
+      const offerId = offer.id || offer._id;
       socket.on('offerUpdated', async (updatedOffer) => {
-        if (updatedOffer.id === offer.id) {
+        if (updatedOffer.id === offerId) {
           setOffer(updatedOffer);
           
           // If we are pending and the goal is now reached, refetch our claim to get the code
@@ -27,7 +52,7 @@ const MyClaim = () => {
              try {
                const updatedClaim = await getClaimById(claim._id || claim.id, customerToken);
                setClaim(updatedClaim);
-               // Optional: Update URL without reloading to reflect the new code
+               // Update URL without reloading to reflect the new code
                navigate(`/my-claim/${updatedClaim.claimCode}`, { replace: true, state: { claim: updatedClaim, offer: updatedOffer } });
              } catch (err) {
                console.error("Failed to refetch claim:", err);
@@ -40,7 +65,7 @@ const MyClaim = () => {
     return () => {
       socket.off('offerUpdated');
     };
-  }, [offer?.id, isPending, claim, customerToken, navigate]);
+  }, [offer, isPending, claim, customerToken, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">

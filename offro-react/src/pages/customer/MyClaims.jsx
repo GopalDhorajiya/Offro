@@ -74,7 +74,9 @@ const MyClaims = () => {
                       {offer ? (
                         offer.benefitType === 'discount' 
                           ? `${offer.discount}% OFF` 
-                          : `Buy ${offer.buyQty} Get ${offer.getQty}`
+                          : offer.benefitType === 'buy_x_get_y'
+                          ? `Buy ${offer.buyQty} Get ${offer.getQty}`
+                          : `₹${offer.discountAmount} OFF on ₹${offer.minPurchase}`
                       ) : 'Unknown Offer'}
                     </h3>
                     <p className="text-xs font-bold text-gray-500">

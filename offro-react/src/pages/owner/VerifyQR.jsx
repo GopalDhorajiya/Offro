@@ -130,7 +130,9 @@ const VerifyQR = () => {
                     <p className="text-3xl font-black text-orange-900">
                       {result.claimDetails.offer.benefitType === 'discount' 
                         ? `${result.claimDetails.offer.discount}% OFF` 
-                        : `Buy ${result.claimDetails.offer.buyQty} Get ${result.claimDetails.offer.getQty}`}
+                        : result.claimDetails.offer.benefitType === 'buy_x_get_y'
+                        ? `Buy ${result.claimDetails.offer.buyQty} Get ${result.claimDetails.offer.getQty}`
+                        : `₹${result.claimDetails.offer.discountAmount} OFF on ₹${result.claimDetails.offer.minPurchase}`}
                     </p>
                     <p className="text-gray-600 font-bold mt-1">
                       on {result.claimDetails.offer.applicableProducts?.[0]?.name || 'Selected Items'}

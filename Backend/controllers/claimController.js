@@ -125,12 +125,18 @@ export const createClaim = async (req, res) => {
     }
 
     if (updatedOffer) emitOfferUpdate(offerResponse.fromOffer(updatedOffer));
+
+    // Refetch claim to ensure we have the code if goal was reached
+    const claimToReturn = goalReached 
+      ? await Claim.findById(newClaim._id) 
+      : newClaim;
     
     return res.status(201).json({ 
       message: goalReached 
         ? "Group goal reached! Everyone got their codes." 
         : (offer.constraintType === "group_goal" ? "Joined group. Waiting for more people..." : "Offer claimed successfully"), 
-      claim: newClaim,
+      claim: claimToReturn,
+      offer: updatedOffer ? offerResponse.fromOffer(updatedOffer) : null,
       goalReached
     });
 
