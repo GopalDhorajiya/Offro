@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Input from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
-import { setupRecaptcha, sendOTP, verifyOTP, loginWithFirebase } from '../../services/authService';
+import { setupRecaptcha, sendOTP, verifyOTP, loginShop } from '../../services/authService';
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -42,12 +42,20 @@ const Login = () => {
     setLoading(true);
     try {
       const idToken = await verifyOTP(otp);
-      const data = await loginWithFirebase(idToken, 'owner');
+      const data = await loginShop(idToken);
       
       login(data.shop, data.token, 'owner');
       navigate('/owner/dashboard');
     } catch (err) {
-      setError(err.message || 'Verification failed');
+      if (err.message?.includes('Shop not found')) {
+        navigate('/owner/signup', { 
+          state: { 
+            phoneNumber: phoneNumber 
+          } 
+        });
+      } else {
+        setError(err.message || 'Verification failed');
+      }
     } finally {
       setLoading(false);
     }

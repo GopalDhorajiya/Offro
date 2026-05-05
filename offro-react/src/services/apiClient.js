@@ -40,7 +40,7 @@ const apiClient = async (endpoint, options = {}) => {
 
   const response = await fetch(`${API_URL}${endpoint}`, config);
 
-  if (response.status === 401) {
+  if (response.status === 401 && (config.headers.Authorization || localStorage.getItem('owner_token') || localStorage.getItem('customer_token'))) {
     localStorage.removeItem('token');
     localStorage.removeItem('customer_token');
     localStorage.removeItem('owner_token');

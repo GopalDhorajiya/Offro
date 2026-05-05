@@ -23,13 +23,6 @@ const productSchema = new Schema(
 const shopSchema = new Schema(
     {
         name: { type: String, required: true },
-        email: {
-            type: String,
-            lowercase: true,
-            unique: true,
-            sparse: true,
-            match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
-        },
         phoneNumber: {
             type: String,
             unique: true,

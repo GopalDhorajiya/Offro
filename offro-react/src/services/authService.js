@@ -2,11 +2,33 @@ import apiClient from './apiClient';
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../firebase";
 
-// Firebase Auth Backend Verification
-export const loginWithFirebase = async (idToken, role, name) => {
-  return apiClient('/auth/firebase', {
+// Customer Auth
+export const registerUser = async (idToken, name) => {
+  return apiClient('/users/register', {
     method: 'POST',
-    body: JSON.stringify({ idToken, role, name }),
+    body: JSON.stringify({ idToken, name }),
+  });
+};
+
+export const loginUser = async (idToken) => {
+  return apiClient('/users/login', {
+    method: 'POST',
+    body: JSON.stringify({ idToken }),
+  });
+};
+
+// Shop Owner Auth
+export const registerShop = async (idToken, name) => {
+  return apiClient('/shops/register', {
+    method: 'POST',
+    body: JSON.stringify({ idToken, name }),
+  });
+};
+
+export const loginShop = async (idToken) => {
+  return apiClient('/shops/login', {
+    method: 'POST',
+    body: JSON.stringify({ idToken }),
   });
 };
 
@@ -66,21 +88,10 @@ export const verifyOTP = async (otp) => {
   }
 };
 
-// Keep old exports for compatibility but mark as deprecated if needed
-// Or just replace them if they are only used in login/signup pages
-export const registerShop = async (userData) => {
-  // Now handled via Firebase + backend/firebase route
-  console.warn("registerShop is deprecated, use loginWithFirebase");
-};
-
-export const loginShop = async (credentials) => {
-  console.warn("loginShop is deprecated, use loginWithFirebase");
-};
-
-export const registerUser = async (userData) => {
-  console.warn("registerUser is deprecated, use loginWithFirebase");
-};
-
-export const loginUser = async (credentials) => {
-  console.warn("loginUser is deprecated, use loginWithFirebase");
+// Deprecated generic login
+export const loginWithFirebase = async (idToken, role, name) => {
+  return apiClient('/auth/firebase', {
+    method: 'POST',
+    body: JSON.stringify({ idToken, role, name }),
+  });
 };

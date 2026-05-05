@@ -2,20 +2,21 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Input from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
-import { setupRecaptcha, sendOTP, verifyOTP, loginWithFirebase } from '../../services/authService';
+import { setupRecaptcha, sendOTP, verifyOTP, registerUser } from '../../services/authService';
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     name: '',
-    phoneNumber: '',
+    phoneNumber: location.state?.phoneNumber || '',
   });
   const [otp, setOtp] = useState('');
   const [showOtp, setShowOtp] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth();
 
   const redirectPath = location.state?.from || '/my-claims';
 
@@ -52,7 +53,7 @@ const Signup = () => {
     setLoading(true);
     try {
       const idToken = await verifyOTP(otp);
-      const data = await loginWithFirebase(idToken, 'customer', formData.name);
+      const data = await registerUser(idToken, formData.name);
       
       login(data.user, data.token, 'customer');
       navigate(redirectPath);

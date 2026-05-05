@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Input from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
-import { setupRecaptcha, sendOTP, verifyOTP, loginWithFirebase } from '../../services/authService';
+import { setupRecaptcha, sendOTP, verifyOTP, loginUser } from '../../services/authService';
 
 const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -47,7 +47,7 @@ const Login = () => {
     setLoading(true);
     try {
       const idToken = await verifyOTP(otp);
-      const data = await loginWithFirebase(idToken, 'customer');
+      const data = await loginUser(idToken);
       
       login(data.user, data.token, 'customer');
       navigate(redirectPath);

@@ -7,7 +7,6 @@ import bodyParser from 'body-parser';
 import shopRoutes from './routes/shopRoutes.js';
 import offerRoutes from './routes/offerRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import authRoutes from './routes/authRoutes.js';
 import claimRoutes from './routes/claimRoutes.js';
 import { createServer } from 'http';
 import { initSocket } from './config/socket.js';
@@ -41,7 +40,6 @@ app.use('/api/claims', claimRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api/offers', offerRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
 
 app.get('/api/server-time', (req, res) => {
     res.json({ serverTime: Date.now() });

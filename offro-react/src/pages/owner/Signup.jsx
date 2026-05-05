@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import Input from '../../components/common/Input';
 import { useAuth } from '../../context/AuthContext';
-import { setupRecaptcha, sendOTP, verifyOTP, loginWithFirebase } from '../../services/authService';
+import { setupRecaptcha, sendOTP, verifyOTP, registerShop } from '../../services/authService';
 
 const Signup = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  
   const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState(location.state?.phoneNumber || '');
   const [otp, setOtp] = useState('');
   const [showOtp, setShowOtp] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { login } = useAuth();
 
   useEffect(() => {
     setupRecaptcha("recaptcha-container");
@@ -43,7 +45,7 @@ const Signup = () => {
     setLoading(true);
     try {
       const idToken = await verifyOTP(otp);
-      const data = await loginWithFirebase(idToken, 'owner', name);
+      const data = await registerShop(idToken, name);
       
       login(data.shop, data.token, 'owner');
       navigate('/owner/dashboard');
