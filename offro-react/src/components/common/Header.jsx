@@ -9,10 +9,8 @@ const Header = () => {
   const isOwnerPath = location.pathname.startsWith('/owner');
   
   // Determine which user context to display in the header
-  // If on owner path, prioritize owner. If on public/customer path, prioritize customer, but fallback to owner if logged in as merchant.
-  const displayAsOwner = isOwnerPath || (owner && !customer);
-  const user = displayAsOwner ? owner : customer;
-  const role = displayAsOwner ? 'owner' : (customer ? 'customer' : null);
+  const role = isOwnerPath ? 'owner' : (customer ? 'customer' : null);
+  const user = isOwnerPath ? owner : customer;
   
   const isOwnerDashboard = location.pathname === '/owner/dashboard';
   const isOwnerCreate = location.pathname === '/owner/create';
