@@ -118,7 +118,7 @@ const ShareBox = ({ offer }) => {
     const products = offer.applicableProducts?.length
       ? offer.applicableProducts.map((p) => p.name).join(", ")
       : "selected items";
-    const link = `http://localhost:5173/offer/${offer.id}`;
+    const link = `${import.meta.env.VITE_FRONTEND_URL}/offer/${offer.id}`;
 
     const discount = offer.discount ?? 0;
     const buyQty = offer.buyQty ?? 0;
@@ -135,7 +135,7 @@ const ShareBox = ({ offer }) => {
     const visitHook = pick(VISIT_HOOKS);
     const forward = pick(FORWARD_LINES);
 
-    return `🛍️ *${shopName}*\n\n${dealLine}\n\n${urgency}\n${visitHook}\n🔗 More details: ${link}\n\n${forward}`.trim();
+    return `\u{1F6CD} 🛍️ ${shopName}\n\n${dealLine}\n\n${urgency}\n${visitHook}\n🔗 More details: ${link}\n\n${forward}`.trim();
   }, [offer]);
 
   const handleCopy = () => {
