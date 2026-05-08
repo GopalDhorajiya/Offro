@@ -4,6 +4,7 @@ import socket from '../../services/socketService';
 import { getClaimById } from '../../services/claimService';
 import { useAuth } from '../../context/AuthContext';
 import Header from '../../components/common/Header';
+import { getOfferById } from '../../services/offerService';
 
 const MyClaim = () => {
   const { claimCode: urlCode } = useParams();
@@ -28,7 +29,6 @@ const MyClaim = () => {
       if (!offer && claim?.offerId) {
         try {
           const offerId = typeof claim.offerId === 'string' ? claim.offerId : claim.offerId._id;
-          const { getOfferById } = await import('../../services/offerService');
           const data = await getOfferById(offerId);
           setOffer(data);
         } catch (err) {
