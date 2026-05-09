@@ -102,8 +102,12 @@ const MyClaim = () => {
                 </>
               ) : (
                 <>
-                  <span className="text-4xl">📱</span>
-                  <p className="text-xs font-bold text-gray-400">Show this code at the counter to redeem</p>
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${claim?.claimCode || urlCode}`} 
+                    alt="Claim QR Code"
+                    className="w-48 h-48 rounded-xl"
+                  />
+                  <p className="text-xs font-bold text-gray-400 mt-2">Show this QR code at the counter to redeem</p>
                 </>
               )}
             </div>

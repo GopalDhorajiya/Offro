@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '../../components/common/Header';
 import { verifyClaim } from '../../services/claimService';
 import { useAuth } from '../../context/AuthContext';
+import { Scanner } from '@yudiel/react-qr-scanner';
 
 const VerifyQR = () => {
   const { ownerToken } = useAuth();
@@ -9,22 +10,36 @@ const VerifyQR = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
 
-  const handleVerify = async (e) => {
-    e.preventDefault();
-    if (!claimCode || claimCode.length < 4) return;
-
+  const performVerification = async (code) => {
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const data = await verifyClaim(claimCode, ownerToken);
+      const data = await verifyClaim(code, ownerToken);
       setResult(data);
+      setShowScanner(false);
     } catch (err) {
       setError(err.message || 'Invalid claim code or server error');
+      setShowScanner(false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerify = async (e) => {
+    e.preventDefault();
+    if (!claimCode || claimCode.length < 4) return;
+    performVerification(claimCode.toUpperCase());
+  };
+
+  const handleScan = (detectedCodes) => {
+    if (detectedCodes && detectedCodes.length > 0) {
+      const scannedCode = detectedCodes[0].rawValue;
+      setClaimCode(scannedCode.toUpperCase());
+      performVerification(scannedCode.toUpperCase());
     }
   };
 
@@ -32,6 +47,7 @@ const VerifyQR = () => {
     setResult(null);
     setError(null);
     setClaimCode('');
+    setShowScanner(false);
   };
 
   return (
@@ -45,7 +61,28 @@ const VerifyQR = () => {
               VERIFY CLAIM
             </h1>
 
-            {!result ? (
+            {showScanner ? (
+              <div className="space-y-6">
+                <div className="overflow-hidden rounded-3xl border-4 border-orange-100 shadow-inner bg-black aspect-square relative">
+                  <Scanner 
+                    onScan={handleScan}
+                    onError={(err) => setError('Camera error: ' + err.message)}
+                    styles={{
+                      container: { width: '100%', height: '100%' }
+                    }}
+                  />
+                  <div className="absolute inset-0 border-[40px] border-black/40 pointer-events-none flex items-center justify-center">
+                    <div className="w-full h-full border-2 border-orange-500 rounded-xl"></div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowScanner(false)}
+                  className="w-full bg-gray-900 text-white font-black py-4 rounded-2xl hover:bg-black transition-all"
+                >
+                  CANCEL SCANNING
+                </button>
+              </div>
+            ) : !result ? (
               <form onSubmit={handleVerify} className="space-y-8">
                 <div className="text-center space-y-2">
                   <p className="text-gray-500 font-medium">Enter the 8-character coupon code</p>
@@ -96,6 +133,7 @@ const VerifyQR = () => {
                 <div className="pt-8 border-t border-gray-100">
                   <button 
                     type="button"
+                    onClick={() => setShowScanner(true)}
                     className="w-full bg-gray-50 text-gray-500 font-black py-4 rounded-2xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
                   >
                     📷 OPEN QR SCANNER
